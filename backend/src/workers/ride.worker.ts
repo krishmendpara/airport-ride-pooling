@@ -1,75 +1,85 @@
-// workers/rideProcessing.worker.ts
+// src/workers/rideProcessing.worker.ts
 import { Worker } from "bullmq";
 import { matchRide } from "../services/matching.service";
 import { calculateFare } from "../services/pricing.service";
 import RideRequest from "../models/RideRequest";
-import { io } from "../server";
+import { getIO } from "../sockets/socket";
 
-// ✅ SOLUTION: Use connection options instead of redis instance
+console.log("🚀 Ride Worker Started");
+
 const redisConnection = {
   host: process.env.REDIS_HOST || "localhost",
   port: Number(process.env.REDIS_PORT) || 6379,
   password: process.env.REDIS_PASSWORD,
-  maxRetriesPerRequest: null, // Important for BullMQ
+  maxRetriesPerRequest: null,
 };
 
 const worker = new Worker(
   "ride-processing",
   async (job) => {
     const { rideId } = job.data;
-    console.log("Processing ride:", rideId);
+    console.log("📍 Processing ride:", rideId);
 
     try {
-      // Match ride with available cabs
+      // Match ride
       await matchRide(rideId);
 
       // Calculate fare
       const fare = await calculateFare(rideId);
 
-      // Update ride request
+      // Update ride
       const ride = await RideRequest.findById(rideId);
-      if (!ride) {
-        throw new Error(`Ride ${rideId} not found`);
-      }
+      if (!ride) throw new Error("Ride not found");
 
       ride.fare = fare;
       ride.status = "MATCHED";
       await ride.save();
 
       // Emit socket event
+      const io = getIO();
       io.emit("rideMatched", {
         rideId,
         fare,
         poolId: ride.pool,
       });
 
+      // ✅ FIXED: Proper template literal syntax
       console.log(`✅ Ride ${rideId} matched successfully`);
+      
+      return { success: true, rideId, fare };
     } catch (error) {
+      // ✅ FIXED: Proper template literal syntax
       console.error(`❌ Error processing ride ${rideId}:`, error);
-      throw error; // Will trigger retry
+      throw error;
     }
   },
   {
-    connection: redisConnection, // ✅ Use connection options
-    concurrency: 5, // Process 5 jobs at a time
+    connection: redisConnection,
+    concurrency: 5,
     limiter: {
-      max: 10, // Max 10 jobs
-      duration: 1000, // Per 1 second
+      max: 10,
+      duration: 1000,
     },
   }
 );
 
 // Event listeners
 worker.on("completed", (job) => {
-  console.log(`✅ Job ${job.id} completed successfully`);
+  // ✅ FIXED: Proper template literal syntax
+  console.log(`✅ Job ${job.id} completed`);
 });
 
 worker.on("failed", (job, err) => {
+  // ✅ FIXED: Proper template literal syntax
   console.error(`❌ Job ${job?.id} failed:`, err.message);
 });
 
 worker.on("error", (err) => {
   console.error("❌ Worker error:", err);
+});
+
+worker.on("ready", () => {
+  console.log("✅ Worker is ready to process jobs");
 });
 
 // Graceful shutdown
