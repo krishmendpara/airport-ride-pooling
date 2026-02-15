@@ -1,4 +1,4 @@
-// src/utils/distance.ts
+
 import { getDistance, isPointWithinRadius, getCenter } from "geolib";
 
 /**

@@ -2,10 +2,10 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IRidePool extends Document {
   passengers: mongoose.Types.ObjectId[];
-  maxSeats: number;
-  maxLuggage: number;
+   maxSeats: number;
+    maxLuggage: number;
   currentSeats: number;
-  currentLuggage: number;
+   currentLuggage: number;
   status: string;
   totalDistance: number;
 }

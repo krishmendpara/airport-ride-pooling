@@ -10,7 +10,7 @@ export const matchRide = async (rideId: string) => {
     const ride = await RideRequest.findById(rideId);
     if (!ride) return;
 
-    // 1️⃣ Find nearby open pools
+ 
     const nearbyPools = await RidePool.find({
       status: "OPEN"
     });

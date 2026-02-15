@@ -1,4 +1,4 @@
-// src/workers/rideProcessing.worker.ts
+
 import { Worker } from "bullmq";
 import { matchRide } from "../services/matching.service";
 import { calculateFare } from "../services/pricing.service";
@@ -43,12 +43,12 @@ const worker = new Worker(
         poolId: ride.pool,
       });
 
-      // ✅ FIXED: Proper template literal syntax
+      
       console.log(`✅ Ride ${rideId} matched successfully`);
       
       return { success: true, rideId, fare };
     } catch (error) {
-      // ✅ FIXED: Proper template literal syntax
+     
       console.error(`❌ Error processing ride ${rideId}:`, error);
       throw error;
     }
@@ -65,12 +65,12 @@ const worker = new Worker(
 
 // Event listeners
 worker.on("completed", (job) => {
-  // ✅ FIXED: Proper template literal syntax
+ 
   console.log(`✅ Job ${job.id} completed`);
 });
 
 worker.on("failed", (job, err) => {
-  // ✅ FIXED: Proper template literal syntax
+
   console.error(`❌ Job ${job?.id} failed:`, err.message);
 });
 
@@ -82,7 +82,7 @@ worker.on("ready", () => {
   console.log("✅ Worker is ready to process jobs");
 });
 
-// Graceful shutdown
+
 process.on("SIGTERM", async () => {
   console.log("🛑 SIGTERM received, closing worker...");
   await worker.close();

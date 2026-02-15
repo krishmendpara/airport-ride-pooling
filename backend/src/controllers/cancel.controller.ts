@@ -11,7 +11,7 @@ export const cancelRide = async (req: Request, res: Response) => {
   let lock: any;
 
   try {
-    // 🔒 Acquire distributed lock
+
     lock = await redlock.acquire([`locks:ride:${rideId}`], 3000);
 
     const ride = await RideRequest.findById(rideId);
@@ -28,17 +28,15 @@ export const cancelRide = async (req: Request, res: Response) => {
       ? await RidePool.findById(ride.pool)
       : null;
 
-    // ✅ Mark ride cancelled
     ride.status = "CANCELLED";
     await ride.save();
 
-    // ✅ Safely decrease active request counter
+ 
     const activeRequests = await redis.get("active_requests");
     if (activeRequests && Number(activeRequests) > 0) {
       await redis.decr("active_requests");
     }
 
-    // ✅ Update pool safely
     if (pool) {
       pool.passengers = pool.passengers.filter(
         (p) => p.toString() !== rideId
@@ -62,7 +60,6 @@ export const cancelRide = async (req: Request, res: Response) => {
       }
     }
 
-    // 📡 Emit real-time update
     const io = getIO();
     io.emit("rideCancelled", {
       rideId,
@@ -81,7 +78,7 @@ export const cancelRide = async (req: Request, res: Response) => {
       details: err.message,
     });
   } finally {
-    // 🔓 Always release lock
+ 
     if (lock) {
       try {
         await lock.release();

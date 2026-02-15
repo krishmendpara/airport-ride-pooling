@@ -1,6 +1,6 @@
-// src/routes/ride.routes.ts
+
 import { Router } from "express";
-import mongoose from "mongoose";  // ✅ Add this import
+import mongoose from "mongoose"; 
 import { createRide } from "../controllers/ride.controller";
 import RideRequest from "../models/RideRequest";
 import redis from "../config/redis";

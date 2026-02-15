@@ -66,7 +66,7 @@ mongoose
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
-  // ✅ FIXED: Proper template literal syntax
+ 
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`🌐 http://localhost:${PORT}`);
   console.log(`🔌 Socket.IO initialized`);

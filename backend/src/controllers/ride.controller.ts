@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import RideRequest from "../models/RideRequest";
-// import { matchRide } from "../services/matching.service";
-// import { calculateFare } from "../services/pricing.service";
-// import redis from "../config/redis";
+
 import { rideQueue } from "../queues/ride.queue";
 
 export const createRide = async (req: Request, res: Response) => {

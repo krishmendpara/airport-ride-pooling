@@ -1,6 +1,6 @@
-// src/config/lock.ts
+
 import Redlock from 'redlock';
-import redis from './redis'; // Your ioredis instance
+import redis from './redis'; 
 
 export const createRedlock = () => {
   return new Redlock([redis], {
@@ -11,5 +11,5 @@ export const createRedlock = () => {
   });
 };
 
-// Create the redlock instance
+
 export const redlock = createRedlock();

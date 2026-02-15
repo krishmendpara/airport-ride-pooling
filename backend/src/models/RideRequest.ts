@@ -12,10 +12,10 @@ export interface IRideRequest extends Document {
   };
   luggageCount: number;
   seatCount: number;
-  detourTolerance: number;
-  status: string;
+      detourTolerance: number;
+       status: string;
   pool?: mongoose.Types.ObjectId;
-  fare: number;
+     fare: number;
 
 }
 
