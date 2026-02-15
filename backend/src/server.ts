@@ -4,6 +4,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
+import rideRoutes from "./routes/ride.routes";
+import cancelRoutes from "./routes/cancel.routes"
+import "./workers/ride.worker";
+
 
 dotenv.config();
 
@@ -18,11 +22,15 @@ const io = new Server(server, {
 
 export { io };
 
+
+app.use("/api/rides", rideRoutes);
+app.use("/api/cancel" , cancelRoutes);
+
 mongoose.connect(process.env.MONGO_URI as string)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.error(err));
 
-app.get("/", (req, res) => {
+app.get("/", (_req , res) => {
   res.send("Smart Airport Pooling Backend Running");
 });
 

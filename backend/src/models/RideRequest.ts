@@ -15,6 +15,8 @@ export interface IRideRequest extends Document {
   detourTolerance: number;
   status: string;
   pool?: mongoose.Types.ObjectId;
+  fare: number;
+
 }
 
 const RideRequestSchema = new Schema<IRideRequest>({
@@ -40,7 +42,9 @@ const RideRequestSchema = new Schema<IRideRequest>({
     default: "PENDING"
   },
 
-  pool: { type: Schema.Types.ObjectId, ref: "RidePool" }
+  pool: { type: Schema.Types.ObjectId, ref: "RidePool" },
+  fare: { type: Number, default: 0 }
+
 
 }, { timestamps: true });
 
